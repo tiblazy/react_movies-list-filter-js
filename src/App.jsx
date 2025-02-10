@@ -3,31 +3,17 @@ import moviesFromServer from './api/movies.json';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 
+function filterMovies(string) {
+  return moviesFromServer.filter(
+    movie =>
+      movie.title.toLowerCase().includes(string.toLowerCase().trim()) ||
+      movie.description.toLowerCase().includes(string.toLowerCase().trim()),
+  );
+}
+
 export const App = () => {
   const [query, setQuery] = useState('');
-  const [visibleMovies, setVisibleMovies] = useState([...moviesFromServer]);
-
-  const searchMovies = data => {
-    setQuery(data);
-
-    if (data !== '') {
-      return setVisibleMovies(
-        [...moviesFromServer].filter(
-          movie =>
-            movie.title
-              .toLowerCase()
-              .trim()
-              .includes(query.toLowerCase().trim()) ||
-            movie.description
-              .toLowerCase()
-              .trim()
-              .includes(query.toLowerCase().trim()),
-        ),
-      );
-    }
-
-    return setVisibleMovies([...moviesFromServer]);
-  };
+  const visibleMovies = filterMovies(query);
 
   return (
     <div className="page">
@@ -44,9 +30,8 @@ export const App = () => {
                 type="text"
                 id="search-query"
                 className="input"
-                value={query}
                 placeholder="Type search word"
-                onChange={e => searchMovies(e.currentTarget.value)}
+                onChange={e => setQuery(e.currentTarget.value)}
               />
             </div>
           </div>
